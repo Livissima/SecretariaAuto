@@ -1,5 +1,5 @@
-from Estudantes.Parâmetros import pasta_generos, pasta_fichas, pasta_situações, pasta_contatos
-from Parâmetros import ID_SIGE, Senha_SIGE, URL_SIGE, chrome_options, data_completa, xpaths, hoje
+from Parâmetros import pasta_generos, pasta_fichas, pasta_situações, pasta_contatos
+from Parâmetros import ID_SIGE, Senha_SIGE, URL_SIGE, chrome_options, data_completa, xpaths_SIGE, hoje
 
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
@@ -14,18 +14,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import logging
-#---------------------------------------------
-# Inicialização.
-
-print(f'\nAutomação iniciada em {data_completa}.')
-navegador = webdriver.Chrome(options=chrome_options)
-navegador.get(URL_SIGE)
-navegador.maximize_window()
-navegador.find_element('id', 'txtCPF').send_keys(ID_SIGE)
-navegador.find_element('id', 'txtSenha').send_keys(Senha_SIGE)
-navegador.find_element('id', 'cmdOK').click()
-
-print('Login realizado com sucesso.', end='\r')
+from selenium.common.exceptions import StaleElementReferenceException
 
 
 
@@ -43,7 +32,7 @@ print('Login realizado com sucesso.', end='\r')
 # Configuração básica do logging
 logging.basicConfig(level=logging.WARNING)  # Mude para INFO se quiser ver mensagens de info
 
-def clicar_xpath(xpath: str):
+def clicar_xpath(navegador, xpath: str):
     """Função para localizar e clicar num elemento a partir do xpath, aguardando até que o elemento esteja clicável."""
     try:
         WebDriverWait(navegador, 10).until(EC.presence_of_element_located((By.XPATH, xpath)))
@@ -53,7 +42,7 @@ def clicar_xpath(xpath: str):
     except Exception as e:
         logging.error(f"Erro ao clicar no elemento: {xpath}. Erro: {e}")  # Registra erros
 
-clicar_xpath(xpaths['janela de alertas'])
+
 
 def clicar_id(ID: str):
     """Função para localizar e clicar num elemento a partir do ID HTML, aguardando até que o elemento esteja clicável."""
@@ -66,15 +55,22 @@ def clicar_id(ID: str):
         print(f"Erro ao clicar no elemento com ID: {ID}. Erro: {e}")  # Você pode manter esta linha para capturar erros
 
 
-def digitar_por_xpath(xpath: str, texto: str):
+def digitar_por_xpath(navegador, xpath: str, texto: str):
     """Função para localizar um campo por XPath e enviar texto, aguardando até que o campo esteja clicável."""
-    try:
-        # Aguarda até que o elemento esteja presente e clicável
-        WebDriverWait(navegador, 10).until(EC.presence_of_element_located((By.XPATH, xpath)))
-        WebDriverWait(navegador, 10).until(EC.visibility_of_element_located((By.XPATH, xpath)))
-        WebDriverWait(navegador, 10).until(EC.element_to_be_clickable((By.XPATH, xpath))).send_keys(texto)
-    except Exception as e:
-        print(f"Erro ao digitar no campo com XPath: {xpath}. Erro: {e}")  # Captura erros
+    for _ in range(3):  # Tenta até 3 vezes
+        try:
+            # Aguarda até que o elemento esteja presente e clicável
+            WebDriverWait(navegador, 10).until(EC.presence_of_element_located((By.XPATH, xpath)))
+            WebDriverWait(navegador, 10).until(EC.visibility_of_element_located((By.XPATH, xpath)))
+            element = WebDriverWait(navegador, 10).until(EC.element_to_be_clickable((By.XPATH, xpath)))
+            element.send_keys(texto)  # Certifique-se de que 'texto' é uma string
+            break  # Sai do loop se a operação for bem-sucedida
+        except StaleElementReferenceException:
+            print(f"Elemento stale, tentando novamente: {xpath}")
+            sleep(1)  # Espera um pouco antes de tentar novamente
+        except Exception as e:
+            print(f"Erro ao digitar no campo com XPath: {xpath}. Erro: {e}")
+            break  # Sai do loop em caso de erro diferente
 
 
 
@@ -97,7 +93,7 @@ def clicar_marcar_todos():
     """Função Selenium. Clica na checkbox de marcar todos.
     Localiza elemento por xpath.
     """
-    clicar_xpath(xpath=xpaths['caixa de marcar todos'])
+    clicar_xpath(xpath=xpaths_SIGE['caixa de marcar todos'])
 
 def clicar_gerar():
     """Função Selenium. Clica no botão de gerar relatório e esperar para printar. Localiza elemento por ID. """
@@ -152,32 +148,32 @@ def clicar_salvar():
 
 def menu_de_fichas():
     """Função pyautogui para chegar na tela de gerar relatórios de fichas cadastrais."""
-    clicar_xpath(xpath=xpaths['lápis documentos'])
-    clicar_xpath(xpath=xpaths['doc/relatórios'])
-    clicar_xpath(xpath=xpaths['rel/dados cadastrais'])
-    clicar_xpath(xpath=xpaths['dad/fichas do aluno'])
+    clicar_xpath(xpath=xpaths_SIGE['lápis documentos'])
+    clicar_xpath(xpath=xpaths_SIGE['doc/relatórios'])
+    clicar_xpath(xpath=xpaths_SIGE['rel/dados cadastrais'])
+    clicar_xpath(xpath=xpaths_SIGE['dad/fichas do aluno'])
     print('• PDFs de Fichas salvos:')
 
 
 def menu_de_contatos():
     """Função pyautogui para chegar na tela de gerar relatórios de fichas cadastrais."""
-    clicar_xpath(xpath=xpaths['lápis documentos'])
-    clicar_xpath(xpath=xpaths['doc/relatórios'])
-    clicar_xpath(xpath=xpaths['rel/dados cadastrais'])
-    clicar_xpath(xpath=xpaths['dad/contatos'])
+    clicar_xpath(xpath=xpaths_SIGE['lápis documentos'])
+    clicar_xpath(xpath=xpaths_SIGE['doc/relatórios'])
+    clicar_xpath(xpath=xpaths_SIGE['rel/dados cadastrais'])
+    clicar_xpath(xpath=xpaths_SIGE['dad/contatos'])
     print('Relatórios de Contatos:')
 
 def menu_de_situações():
-    clicar_xpath(xpath=xpaths['lápis documentos'])
-    clicar_xpath(xpath=xpaths['doc/relatórios'])
-    clicar_xpath(xpath=xpaths['rel/alunos'])
-    clicar_xpath(xpath=xpaths['alu/situação'])
+    clicar_xpath(xpath=xpaths_SIGE['lápis documentos'])
+    clicar_xpath(xpath=xpaths_SIGE['doc/relatórios'])
+    clicar_xpath(xpath=xpaths_SIGE['rel/alunos'])
+    clicar_xpath(xpath=xpaths_SIGE['alu/situação'])
 
 def menu_de_gêneros():
-    clicar_xpath(xpath=xpaths['lápis documentos'])
-    clicar_xpath(xpath=xpaths['doc/relatórios'])
-    clicar_xpath(xpath=xpaths['rel/acomp pedagógico'])
-    clicar_xpath(xpath=xpaths['aco/alunos por idade'])
+    clicar_xpath(xpath=xpaths_SIGE['lápis documentos'])
+    clicar_xpath(xpath=xpaths_SIGE['doc/relatórios'])
+    clicar_xpath(xpath=xpaths_SIGE['rel/acomp pedagógico'])
+    clicar_xpath(xpath=xpaths_SIGE['aco/alunos por idade'])
 
 
 def esperar_pagina_carregar():
@@ -196,9 +192,9 @@ def voltar(tipo_de_relatório: Literal['Fichas', 'Contatos', 'Gênero', 'Situaç
     Localiza elemento por xpath.
     """
     if tipo_de_relatório == 'Fichas' or tipo_de_relatório == 'Contatos':
-        clicar_xpath(xpath=xpaths['botão voltar F, C'])
+        clicar_xpath(xpath=xpaths_SIGE['botão voltar F, C'])
     elif tipo_de_relatório == 'Situações' or tipo_de_relatório == 'Gênero':
-        clicar_xpath(xpath=xpaths['botão voltar S, G'])
+        clicar_xpath(xpath=xpaths_SIGE['botão voltar S, G'])
 
 
 def salvar_printar(turma):
@@ -324,7 +320,7 @@ def Sessão_downloads_gêneros(turma, primeira_execucao):
     Na primeira execução, o layout é definido para paisagem com pyautogui.
     """
     selecionar_turma(turma)
-    digitar_por_xpath(xpath=xpaths['api/data ref'], texto=hoje)
+    digitar_por_xpath(xpath=xpaths_SIGE['api/data ref'], texto=hoje)
     clicar_gerar()
 
     Imprimir()
@@ -341,3 +337,19 @@ def Sessão_downloads_gêneros(turma, primeira_execucao):
         preencher_path('Gênero')
     salvar_printar(turma=turma)
     voltar('Gênero')
+
+
+
+#---------------------------------------------
+# Inicialização.
+if __name__ == "__main__":
+    print(f'\nAutomação iniciada em {data_completa}.')
+    navegador = webdriver.Chrome(options=chrome_options)
+    navegador.get(URL_SIGE)
+    navegador.maximize_window()
+    navegador.find_element('id', 'txtCPF').send_keys(ID_SIGE)
+    navegador.find_element('id', 'txtSenha').send_keys(Senha_SIGE)
+    navegador.find_element('id', 'cmdOK').click()
+
+    print('Login realizado com sucesso.', end='\r')
+    clicar_xpath(xpaths_SIGE['janela de alertas'])

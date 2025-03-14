@@ -4,16 +4,31 @@ import pyautogui
 from selenium.webdriver.chrome.options import Options
 import json
 from datetime import datetime
-
+import os
+from Credenciais import ID_SIGE, ID_SIAP, Senha_SIAP, Senha_SIGE
 
 
 data_completa                 = datetime.now().strftime("%H:%M:%S, %d/%m/%Y")
 hoje                          = datetime.now().strftime('%d/%m/%Y')
-
+URL_SIAP   = r'https://siap.educacao.go.gov.br/'
 data_completa_nome_de_arquivo = datetime.now().strftime("%H_%M_%S, %d_%m_%Y")
 
 Turmas = ['6A', '6B', '6C', '7A', '7B', '8A', '8B', '9A']
 Series = ['6', '7', '8', '9']
+
+pasta_generos   = r'C:\Users\meren\OneDrive - Secretaria de Estado da Educação\Secretaria\2025\Dados\Estudantes\Base de dados\Gênero'
+pasta_fichas    = r'C:\Users\meren\OneDrive - Secretaria de Estado da Educação\Secretaria\2025\Dados\Estudantes\Base de dados\Fichas'
+pasta_situações = r'C:\Users\meren\OneDrive - Secretaria de Estado da Educação\Secretaria\2025\Dados\Estudantes\Base de dados\Situações'
+pasta_contatos  = r'C:\Users\meren\OneDrive - Secretaria de Estado da Educação\Secretaria\2025\Dados\Estudantes\Base de dados\Contatos'
+
+
+
+
+
+
+
+
+
 
 
 turmas_por_serie = {
@@ -23,7 +38,7 @@ turmas_por_serie = {
     '9': ['9A']
 }
 
-xpaths = {
+xpaths_SIGE = {
     'janela de alertas'    : '//*[@id="mensagensSIGE"]/a',
     'caixa de marcar todos': '/html/body/div[8]/form/table/tbody/tr[9]/td/table/tbody/tr[1]/td[1]/input',
     'botão voltar F, C'    : '/html/body/div[2]/img[1]',
@@ -40,17 +55,21 @@ xpaths = {
     'api/data ref'         : '/html/body/div[8]/form/table/tbody/tr[6]/td[2]/input'
 }
 
+xpaths_SIAP = {
+    'campo login'           : '/html/body/form/div[3]/div/div/div/div[2]/div[2]/div[1]/div[1]/div[1]/input',
+    'campo senha'           : '/html/body/form/div[3]/div/div/div/div[2]/div[2]/div[1]/div[1]/div[2]/div[1]/input',
+    'captcha'               : '/html/body/form/div[3]/div/div/div/div[2]/div[2]/span[2]',
+    'captcha input'         : '/html/body/form/div[3]/div/div/div/div[2]/div[2]/div[1]/div[1]/div[2]/div[2]/input',
+    'botão login'           : '/html/body/form/div[3]/div/div/div/div[2]/div[2]/div[1]/div[2]/input'
+}
 
 
 
 #####################################################SIAP
-ID_SIAP = ''
-Senha_SIAP = ''
-URL_SIAP = r'https://siap.educacao.go.gov.br/FrequenciaDiaria.aspx'
+
 
 #####################################SIGE
-ID_SIGE    = '802.930.181-20'
-Senha_SIGE = '23112006'
+
 path_fichas = r'C:\Users\meren\OneDrive - Secretaria de Estado da Educação\Secretaria\2025\Dados\Estudantes\Base de dados\Fichas'
 path_fichas_casa = r'C:\Users\livia\Desktop\pastas\fichas'
 path_contatos = r'C:\Users\meren\OneDrive - Secretaria de Estado da Educação\Secretaria\2025\Dados\Estudantes\Base de dados\Contatos'
