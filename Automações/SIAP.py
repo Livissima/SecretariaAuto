@@ -4,9 +4,11 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-from Parâmetros import URL_SIAP, ID_SIAP, Senha_SIAP, xpaths_SIAP
+from Automações.Parâmetros import path_base_faltas
+from Parâmetros import URL_SIAP, ID_SIAP, Senha_SIAP, xpaths_SIAP, xpaths_turmas, path_database
 from Funções import clicar_xpath, digitar_por_xpath, esperar_pagina_carregar
 from time import sleep
+import pandas as pd
 
 navegador = webdriver.Chrome()
 
@@ -42,11 +44,60 @@ esperar_pagina_carregar(navegador)
 clicar_xpath(navegador=navegador, xpath=xpaths_SIAP['menu sistema'])
 clicar_xpath(navegador=navegador, xpath=xpaths_SIAP['menu/freq'])
 
-xpaths_turmas = [xpaths_SIAP[chave] for chave in ['6A', '6B', '7A', '7B', '8A', '8B', '9A', '6C']]
+base_estudantes = pd.read_excel(path_database)
+base_estudantes = base_estudantes[['Matrícula', 'Estudante', 'Turma']]
+df_faltas = pd.read_excel(path_base_faltas, sheet_name='Visão Faltas')
+df_faltas = df_faltas[['Turma', 'Estudante', 'Data Falta', 'Lançado']]
+df_faltas = df_faltas[df_faltas['Lançado'] == 'Lançado']
+
+map_matrícula = base_estudantes.set_index('Estudante')['Matrícula']
+df_faltas['Matrícula'] = df_faltas['Estudante'].map(map_matrícula)
+print(df_faltas)
+
+
+
+def localizar_clicar(navegador, turma):
+    """
+    Localiza e clica nos elementos de falta com base na turma e matrícula.
+    """
+    # Filtrar apenas as matrículas da turma atual
+    matriculas_turma = df_faltas[df_faltas['Turma'] == turma]['Matrícula'].astype(str).tolist()
+
+    # Aguardar a carga da lista de presença
+    WebDriverWait(navegador, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "itens")))
+
+    # Localizar todos os "pontinhos" de presença/falta
+    pontinhos = navegador.find_elements(By.CSS_SELECTOR, "div.itens div.item")
+
+    if not pontinhos:
+        print(f"⚠ Nenhum elemento encontrado para a turma {turma}")
+        return
+
+    total_cliques = 0
+
+    for ponto in pontinhos:
+        matricula = ponto.get_attribute("data-matricula")  # Capturar a matrícula
+
+        if matricula in matriculas_turma:
+            try:
+                # Força o clique com JavaScript caso o Selenium não consiga
+                navegador.execute_script("arguments[0].click();", ponto)
+                sleep(0.5)  # Delay para evitar cliques muito rápidos
+                total_cliques += 1
+            except Exception as e:
+                print(f"Erro ao clicar na matrícula {matricula}: {e}")
+
+    print(f"✔ {total_cliques} faltas lançadas para a turma {turma}.")
+
+
+
+
 
 for turma in xpaths_turmas:
-    clicar_xpath(navegador=navegador, xpath=turma)
-    esperar_pagina_carregar(navegador)
-    clicar_xpath(navegador, xpaths_SIAP['salvar e próximo'])
+    clicar_xpath(navegador=navegador, xpath=turma)  # Muda para a turma
+    esperar_pagina_carregar(navegador=navegador)  # Aguarda carregamento
 
-print('Presença lançada para TODOS os alunos.')
+    localizar_clicar(navegador=navegador, turma=turma)  # Lança as faltas para a turma
+
+    clicar_xpath(navegador=navegador, xpath=xpaths_SIAP['salvar e próximo'])  # Passa para a próxima turma
+

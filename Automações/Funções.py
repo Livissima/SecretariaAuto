@@ -7,27 +7,18 @@ import time
 from keyboard import write as escrever
 from pyautogui import press as tecla
 from typing import Literal
-from time import sleep
 import pyautogui
 from pyautogui import click, moveTo
-from selenium.webdriver.common.by import By
+import logging
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import logging
-from selenium.common.exceptions import StaleElementReferenceException
-
-
-
-
-
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
+from time import sleep
 
 #-----------------------------------------------------
 #-----------------------------------------------------
 # Funções --------------------------------------------
-
-
-
-
 
 # Configuração básica do logging
 logging.basicConfig(level=logging.WARNING)  # Mude para INFO se quiser ver mensagens de info
@@ -55,11 +46,7 @@ def clicar_id(navegador, ID: str):
         print(f"Erro ao clicar no elemento com ID: {ID}. Erro: {e}")  # Você pode manter esta linha para capturar erros
 
 
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
-from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
-from time import sleep
+
 
 def digitar_por_xpath(navegador, xpath: str, texto: str):
     """Função para localizar um campo por XPath e enviar texto, aguardando até que o campo esteja clicável."""

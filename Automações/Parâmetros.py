@@ -71,10 +71,12 @@ xpaths_SIAP = {
     '8B': '/html/body/form/div[4]/div[2]/div/div/div/div[1]/div[6]/span',
     '9A': '/html/body/form/div[4]/div[2]/div/div/div/div[1]/div[7]/span',
     '6C': '/html/body/form/div[4]/div[2]/div/div/div/div[1]/div[8]/span',
-    'salvar e próximo' : '/html/body/form/div[4]/div[2]/div/p/input[1]'
+    'salvar e próximo' : '/html/body/form/div[4]/div[2]/div/p/input[1]',
+    'data' : '/html/body/form/div[4]/div[2]/div/div/div/div[4]/div[2]/div/div/div[1]/div'
 }
-
-
+xpaths_turmas = [xpaths_SIAP[chave] for chave in ['6A', '6B', '7A', '7B', '8A', '8B', '9A', '6C']]
+path_database = r'C:\Users\meren\OneDrive - Secretaria de Estado da Educação\Secretaria\2025\Dados\Estudantes\Consultas\Database.xlsx'
+path_base_faltas = r'C:\Users\meren\OneDrive - Secretaria de Estado da Educação\Secretaria\2025\Dados\Estudantes\Consultas\Frequência\Registro de Faltas - 03 Março.xlsm'
 
 #####################################################SIAP
 
