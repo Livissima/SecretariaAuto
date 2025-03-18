@@ -44,7 +44,7 @@ def clicar_xpath(navegador, xpath: str):
 
 
 
-def clicar_id(ID: str):
+def clicar_id(navegador, ID: str):
     """Função para localizar e clicar num elemento a partir do ID HTML, aguardando até que o elemento esteja clicável."""
     try:
         # Aguarda até que o elemento esteja presente e clicável
@@ -55,22 +55,35 @@ def clicar_id(ID: str):
         print(f"Erro ao clicar no elemento com ID: {ID}. Erro: {e}")  # Você pode manter esta linha para capturar erros
 
 
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
+from time import sleep
+
 def digitar_por_xpath(navegador, xpath: str, texto: str):
     """Função para localizar um campo por XPath e enviar texto, aguardando até que o campo esteja clicável."""
     for _ in range(3):  # Tenta até 3 vezes
         try:
-            # Aguarda até que o elemento esteja presente e clicável
-            WebDriverWait(navegador, 10).until(EC.presence_of_element_located((By.XPATH, xpath)))
-            WebDriverWait(navegador, 10).until(EC.visibility_of_element_located((By.XPATH, xpath)))
-            element = WebDriverWait(navegador, 10).until(EC.element_to_be_clickable((By.XPATH, xpath)))
-            element.send_keys(texto)  # Certifique-se de que 'texto' é uma string
+            # Aguarda até que o elemento esteja presente, visível e habilitado
+            element = WebDriverWait(navegador, 10).until(
+                lambda driver: driver.find_element(By.XPATH, xpath) if driver.find_element(By.XPATH, xpath).is_enabled() else None
+            )
+
+            element.clear()  # Limpa o campo antes de digitar (se necessário)
+            element.send_keys(texto)  # Envia o texto
+
             break  # Sai do loop se a operação for bem-sucedida
         except StaleElementReferenceException:
             print(f"Elemento stale, tentando novamente: {xpath}")
             sleep(1)  # Espera um pouco antes de tentar novamente
+        except TimeoutException:
+            print(f"Tempo limite excedido para encontrar o elemento: {xpath}")
+            break
         except Exception as e:
             print(f"Erro ao digitar no campo com XPath: {xpath}. Erro: {e}")
             break  # Sai do loop em caso de erro diferente
+
 
 
 
@@ -176,7 +189,7 @@ def menu_de_gêneros():
     clicar_xpath(xpath=xpaths_SIGE['aco/alunos por idade'])
 
 
-def esperar_pagina_carregar():
+def esperar_pagina_carregar(navegador):
     """Aguarda até que a página esteja completamente carregada."""
     WebDriverWait(navegador, 10).until(EC.presence_of_element_located((By.TAG_NAME, 'body')))  # Aguarda o corpo da página estar presente
     WebDriverWait(navegador, 10).until(EC.visibility_of_element_located((By.TAG_NAME, 'body')))  # Aguarda o corpo da página estar visível

@@ -60,7 +60,18 @@ xpaths_SIAP = {
     'campo senha'           : '/html/body/form/div[3]/div/div/div/div[2]/div[2]/div[1]/div[1]/div[2]/div[1]/input',
     'captcha'               : '/html/body/form/div[3]/div/div/div/div[2]/div[2]/span[2]',
     'captcha input'         : '/html/body/form/div[3]/div/div/div/div[2]/div[2]/div[1]/div[1]/div[2]/div[2]/input',
-    'botão login'           : '/html/body/form/div[3]/div/div/div/div[2]/div[2]/div[1]/div[2]/input'
+    'botão login'           : '/html/body/form/div[3]/div/div/div/div[2]/div[2]/div[1]/div[2]/input',
+    'menu sistema' : '/html/body/form/div[3]/div/div[2]',
+    'menu/freq' : '/html/body/form/div[4]/div[1]/span/div/div[2]/li[7]/a',
+    '6A' : '/html/body/form/div[4]/div[2]/div/div/div/div[1]/div[1]/span',
+    '6B' : '/html/body/form/div[4]/div[2]/div/div/div/div[1]/div[2]/span',
+    '7A': '/html/body/form/div[4]/div[2]/div/div/div/div[1]/div[3]/span',
+    '7B': '/html/body/form/div[4]/div[2]/div/div/div/div[1]/div[4]/span',
+    '8A': '/html/body/form/div[4]/div[2]/div/div/div/div[1]/div[5]/span',
+    '8B': '/html/body/form/div[4]/div[2]/div/div/div/div[1]/div[6]/span',
+    '9A': '/html/body/form/div[4]/div[2]/div/div/div/div[1]/div[7]/span',
+    '6C': '/html/body/form/div[4]/div[2]/div/div/div/div[1]/div[8]/span',
+    'salvar e próximo' : '/html/body/form/div[4]/div[2]/div/p/input[1]'
 }
 
 
