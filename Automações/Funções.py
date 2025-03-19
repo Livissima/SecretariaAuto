@@ -17,6 +17,16 @@ from selenium.common.exceptions import StaleElementReferenceException, TimeoutEx
 from time import sleep
 
 #-----------------------------------------------------
+print(f'\nAutomação iniciada em {data_completa}.')
+navegador = webdriver.Chrome(options=chrome_options)
+navegador.get(URL_SIGE)
+navegador.maximize_window()
+navegador.find_element('id', 'txtCPF').send_keys(ID_SIGE)
+navegador.find_element('id', 'txtSenha').send_keys(Senha_SIGE)
+navegador.find_element('id', 'cmdOK').click()
+
+print('Login realizado com sucesso.', end='\r')
+
 #-----------------------------------------------------
 # Funções --------------------------------------------
 
@@ -32,7 +42,7 @@ def clicar_xpath(navegador, xpath: str):
         # logging.info(f"Clicou no elemento: {xpath}")  # Use logging em vez de print
     except Exception as e:
         logging.error(f"Erro ao clicar no elemento: {xpath}. Erro: {e}")  # Registra erros
-
+clicar_xpath(navegador, xpaths_SIGE['janela de alertas'])
 
 
 def clicar_id(navegador, ID: str):
@@ -93,16 +103,16 @@ def clicar_marcar_todos():
     """Função Selenium. Clica na checkbox de marcar todos.
     Localiza elemento por xpath.
     """
-    clicar_xpath(xpath=xpaths_SIGE['caixa de marcar todos'])
+    clicar_xpath(navegador, xpath=xpaths_SIGE['caixa de marcar todos'])
 
 def clicar_gerar():
     """Função Selenium. Clica no botão de gerar relatório e esperar para printar. Localiza elemento por ID. """
-    clicar_id('gerarRel')
+    clicar_id(navegador, 'gerarRel')
     sleep(1)
 
 
 def selecionar_série(série):
-    """"
+    """
     Sequência de funções Selenium.
     Seleciona as opções de Série nos campos de dropdown.
     """
@@ -148,32 +158,32 @@ def clicar_salvar():
 
 def menu_de_fichas():
     """Função pyautogui para chegar na tela de gerar relatórios de fichas cadastrais."""
-    clicar_xpath(xpath=xpaths_SIGE['lápis documentos'])
-    clicar_xpath(xpath=xpaths_SIGE['doc/relatórios'])
-    clicar_xpath(xpath=xpaths_SIGE['rel/dados cadastrais'])
-    clicar_xpath(xpath=xpaths_SIGE['dad/fichas do aluno'])
+    clicar_xpath(navegador, xpath=xpaths_SIGE['lápis documentos'])
+    clicar_xpath(navegador, xpath=xpaths_SIGE['doc/relatórios'])
+    clicar_xpath(navegador, xpath=xpaths_SIGE['rel/dados cadastrais'])
+    clicar_xpath(navegador, xpath=xpaths_SIGE['dad/fichas do aluno'])
     print('• PDFs de Fichas salvos:')
 
 
 def menu_de_contatos():
     """Função pyautogui para chegar na tela de gerar relatórios de fichas cadastrais."""
-    clicar_xpath(xpath=xpaths_SIGE['lápis documentos'])
-    clicar_xpath(xpath=xpaths_SIGE['doc/relatórios'])
-    clicar_xpath(xpath=xpaths_SIGE['rel/dados cadastrais'])
-    clicar_xpath(xpath=xpaths_SIGE['dad/contatos'])
+    clicar_xpath(navegador, xpath=xpaths_SIGE['lápis documentos'])
+    clicar_xpath(navegador, xpath=xpaths_SIGE['doc/relatórios'])
+    clicar_xpath(navegador, xpath=xpaths_SIGE['rel/dados cadastrais'])
+    clicar_xpath(navegador, xpath=xpaths_SIGE['dad/contatos'])
     print('Relatórios de Contatos:')
 
 def menu_de_situações():
-    clicar_xpath(xpath=xpaths_SIGE['lápis documentos'])
-    clicar_xpath(xpath=xpaths_SIGE['doc/relatórios'])
-    clicar_xpath(xpath=xpaths_SIGE['rel/alunos'])
-    clicar_xpath(xpath=xpaths_SIGE['alu/situação'])
+    clicar_xpath(navegador, xpath=xpaths_SIGE['lápis documentos'])
+    clicar_xpath(navegador, xpath=xpaths_SIGE['doc/relatórios'])
+    clicar_xpath(navegador, xpath=xpaths_SIGE['rel/alunos'])
+    clicar_xpath(navegador, xpath=xpaths_SIGE['alu/situação'])
 
 def menu_de_gêneros():
-    clicar_xpath(xpath=xpaths_SIGE['lápis documentos'])
-    clicar_xpath(xpath=xpaths_SIGE['doc/relatórios'])
-    clicar_xpath(xpath=xpaths_SIGE['rel/acomp pedagógico'])
-    clicar_xpath(xpath=xpaths_SIGE['aco/alunos por idade'])
+    clicar_xpath(navegador, xpath=xpaths_SIGE['lápis documentos'])
+    clicar_xpath(navegador, xpath=xpaths_SIGE['doc/relatórios'])
+    clicar_xpath(navegador, xpath=xpaths_SIGE['rel/acomp pedagógico'])
+    clicar_xpath(navegador, xpath=xpaths_SIGE['aco/alunos por idade'])
 
 
 def esperar_pagina_carregar(navegador):
@@ -183,7 +193,7 @@ def esperar_pagina_carregar(navegador):
 
 def Imprimir():
     """Atalho simples (Ctrl + P)"""
-    esperar_pagina_carregar()  # Aguarda a página carregar completamente
+    esperar_pagina_carregar(navegador)  # Aguarda a página carregar completamente
     pyautogui.hotkey('ctrl', 'p')  # Executa o atalho de impressão
 
 def voltar(tipo_de_relatório: Literal['Fichas', 'Contatos', 'Gênero', 'Situações']):
@@ -192,9 +202,9 @@ def voltar(tipo_de_relatório: Literal['Fichas', 'Contatos', 'Gênero', 'Situaç
     Localiza elemento por xpath.
     """
     if tipo_de_relatório == 'Fichas' or tipo_de_relatório == 'Contatos':
-        clicar_xpath(xpath=xpaths_SIGE['botão voltar F, C'])
+        clicar_xpath(navegador, xpath=xpaths_SIGE['botão voltar F, C'])
     elif tipo_de_relatório == 'Situações' or tipo_de_relatório == 'Gênero':
-        clicar_xpath(xpath=xpaths_SIGE['botão voltar S, G'])
+        clicar_xpath(navegador, xpath=xpaths_SIGE['botão voltar S, G'])
 
 
 def salvar_printar(turma):
@@ -320,7 +330,7 @@ def Sessão_downloads_gêneros(turma, primeira_execucao):
     Na primeira execução, o layout é definido para paisagem com pyautogui.
     """
     selecionar_turma(turma)
-    digitar_por_xpath(xpath=xpaths_SIGE['api/data ref'], texto=hoje)
+    digitar_por_xpath(navegador, xpath=xpaths_SIGE['api/data ref'], texto=hoje)
     clicar_gerar()
 
     Imprimir()
@@ -342,14 +352,4 @@ def Sessão_downloads_gêneros(turma, primeira_execucao):
 
 #---------------------------------------------
 # Inicialização.
-if __name__ == "__main__":
-    print(f'\nAutomação iniciada em {data_completa}.')
-    navegador = webdriver.Chrome(options=chrome_options)
-    navegador.get(URL_SIGE)
-    navegador.maximize_window()
-    navegador.find_element('id', 'txtCPF').send_keys(ID_SIGE)
-    navegador.find_element('id', 'txtSenha').send_keys(Senha_SIGE)
-    navegador.find_element('id', 'cmdOK').click()
-
-    print('Login realizado com sucesso.', end='\r')
-    clicar_xpath(xpaths_SIGE['janela de alertas'])
+# if __name__ == "__main__":

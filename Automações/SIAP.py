@@ -101,3 +101,6 @@ for turma in xpaths_turmas:
 
     clicar_xpath(navegador=navegador, xpath=xpaths_SIAP['salvar e próximo'])  # Passa para a próxima turma
 
+    sleep(5)
+
+sleep(60*10)
