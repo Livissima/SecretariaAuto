@@ -44,7 +44,6 @@ def clicar_xpath(navegador, xpath: str):
         logging.error(f"Erro ao clicar no elemento: {xpath}. Erro: {e}")  # Registra erros
 clicar_xpath(navegador, xpaths_SIGE['janela de alertas'])
 
-
 def clicar_id(navegador, ID: str):
     """Função para localizar e clicar num elemento a partir do ID HTML, aguardando até que o elemento esteja clicável."""
     try:
@@ -54,9 +53,6 @@ def clicar_id(navegador, ID: str):
         WebDriverWait(navegador, 10).until(EC.element_to_be_clickable((By.ID, ID))).click()
     except Exception as e:
         print(f"Erro ao clicar no elemento com ID: {ID}. Erro: {e}")  # Você pode manter esta linha para capturar erros
-
-
-
 
 def digitar_por_xpath(navegador, xpath: str, texto: str):
     """Função para localizar um campo por XPath e enviar texto, aguardando até que o campo esteja clicável."""
@@ -81,9 +77,6 @@ def digitar_por_xpath(navegador, xpath: str, texto: str):
             print(f"Erro ao digitar no campo com XPath: {xpath}. Erro: {e}")
             break  # Sai do loop em caso de erro diferente
 
-
-
-
 def select_option(dropdown_id, option_value=None, option_text=None):
     # Espera até que o dropdown esteja presente
     select_element = WebDriverWait(navegador, 10).until(
@@ -98,7 +91,6 @@ def select_option(dropdown_id, option_value=None, option_text=None):
     else:
         raise ValueError("You must provide either option_value or option_text.")
 
-
 def clicar_marcar_todos():
     """Função Selenium. Clica na checkbox de marcar todos.
     Localiza elemento por xpath.
@@ -110,7 +102,6 @@ def clicar_gerar():
     clicar_id(navegador, 'gerarRel')
     sleep(1)
 
-
 def selecionar_série(série):
     """
     Sequência de funções Selenium.
@@ -119,7 +110,6 @@ def selecionar_série(série):
     select_option('cmbComposicao', option_value='199')
     select_option('cmbSerie', option_text=f'{série}º Ano')  # Corrigido de 'cmgSerie' para 'cmbSerie'
     select_option('cmbTurno', option_value='1')
-
 
 def selecionar_turma(turma):
     """"
@@ -139,11 +129,9 @@ def definir_layout_por_click():
     sleep(0.2)
     tecla('tab', presses=3, interval=0.1)
 
-
 def clicar_no_endereço():
     """Função de atalho (Alt + E) para clicar na barra de endereço."""
     pyautogui.hotkey('alt', 'e')
-
 
 def clicar_salvar():
     """
@@ -155,7 +143,6 @@ def clicar_salvar():
     pyautogui.hotkey('alt', 's')
     time.sleep(1)
 
-
 def menu_de_fichas():
     """Função pyautogui para chegar na tela de gerar relatórios de fichas cadastrais."""
     clicar_xpath(navegador, xpath=xpaths_SIGE['lápis documentos'])
@@ -163,7 +150,6 @@ def menu_de_fichas():
     clicar_xpath(navegador, xpath=xpaths_SIGE['rel/dados cadastrais'])
     clicar_xpath(navegador, xpath=xpaths_SIGE['dad/fichas do aluno'])
     print('• PDFs de Fichas salvos:')
-
 
 def menu_de_contatos():
     """Função pyautogui para chegar na tela de gerar relatórios de fichas cadastrais."""
@@ -185,7 +171,6 @@ def menu_de_gêneros():
     clicar_xpath(navegador, xpath=xpaths_SIGE['rel/acomp pedagógico'])
     clicar_xpath(navegador, xpath=xpaths_SIGE['aco/alunos por idade'])
 
-
 def esperar_pagina_carregar(navegador):
     """Aguarda até que a página esteja completamente carregada."""
     WebDriverWait(navegador, 10).until(EC.presence_of_element_located((By.TAG_NAME, 'body')))  # Aguarda o corpo da página estar presente
@@ -205,7 +190,6 @@ def voltar(tipo_de_relatório: Literal['Fichas', 'Contatos', 'Gênero', 'Situaç
         clicar_xpath(navegador, xpath=xpaths_SIGE['botão voltar F, C'])
     elif tipo_de_relatório == 'Situações' or tipo_de_relatório == 'Gênero':
         clicar_xpath(navegador, xpath=xpaths_SIGE['botão voltar S, G'])
-
 
 def salvar_printar(turma):
     """Função simples para agrupar sequência de comandos de salvar, confirmar, printar nome do último arquivo e
@@ -235,7 +219,6 @@ def preencher_nome(turma):
     escrever(f'{turma}.pdf')
     sleep(0.5)
 
-
 def Sessão_downloads_fichas(turma, primeira_execucao):
     """
     Sequência de ações automatizadas por Selenium e Pyautogui.
@@ -262,7 +245,6 @@ def Sessão_downloads_fichas(turma, primeira_execucao):
 
     salvar_printar(turma=turma)
     voltar('Fichas')
-
 
 def Sessão_downloads_contatos(turma, primeira_execucao):
     """
@@ -293,7 +275,6 @@ def Sessão_downloads_contatos(turma, primeira_execucao):
         preencher_path('Contatos')
     salvar_printar(turma=turma)
     voltar('Contatos')
-
 
 def Sessão_downloads_situações(turma, primeira_execucao):
     """

@@ -39,7 +39,8 @@ turmas_por_serie = {
 }
 
 xpaths_SIGE = {
-    'janela de alertas'    : '//*[@id="mensagensSIGE"]/a',
+    'janela de alertas'    : '/html/body/div[11]/div/a',
+
     'caixa de marcar todos': '/html/body/div[8]/form/table/tbody/tr[9]/td/table/tbody/tr[1]/td[1]/input',
     'botão voltar F, C'    : '/html/body/div[2]/img[1]',
     'botão voltar S, G'    : '/html/body/div[1]/img[1]',

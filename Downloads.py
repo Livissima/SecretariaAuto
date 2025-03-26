@@ -17,6 +17,7 @@ for serie in Series:
     selecionar_série(serie)
     turmas_correspondentes = turmas_por_serie[serie]
     for turma in turmas_correspondentes:
+
         Sessão_downloads_fichas(turma, primeira_execucao)
         primeira_execucao = False
 end_time_fichas = time.time()
@@ -70,7 +71,7 @@ print(f'    Tempo para extrair as situações: {(end_time_situações - end_time
 
 menu_de_gêneros()
 
-print('Pdfs de Situações')
+print('Pdfs de Gêneros:')
 
 primeira_execucao = True
 for serie in Series:
